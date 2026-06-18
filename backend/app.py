@@ -58,7 +58,8 @@ def add_to_bookshelf():
         cover_url=data.get('cover_url'),
         year=data.get('year'),
         status=data.get('status', 'in progress'),
-        rating=data.get('rating', 0)
+        rating=data.get('rating', 0),
+        is_favorite=data.get('is_favorite', False) # 🟢 Safely processes favorite flags from frontend payloads
     )
     db.session.add(new_book)
     db.session.commit()
@@ -75,6 +76,8 @@ def update_book_metrics(book_id):
         book.status = data['status']
     if 'rating' in data:
         book.rating = data['rating']
+    if 'is_favorite' in data:
+        book.is_favorite = data['is_favorite'] # 🟢 Mutates favorite values instantly upon click
         
     db.session.commit()
     return jsonify(book_schema.dump(book)), 200

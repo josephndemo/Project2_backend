@@ -13,7 +13,8 @@ class Book(db.Model):
     cover_url = db.Column(db.Text, nullable=True)
     year = db.Column(db.Integer, nullable=True)
     status = db.Column(db.String(50), default='in progress')  # Tracks: 'in progress' or 'read'
-    rating = db.Column(db.Integer, default=0)                # 5 stars flags it as a Favorite!
+    rating = db.Column(db.Integer, default=0)                
+    is_favorite = db.Column(db.Boolean, default=False, nullable=False) # 🟢 Synchronized with frontend tracking hooks
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     # 🔗 Relationship: Cascades deletions down to individual comment/review nodes automatically

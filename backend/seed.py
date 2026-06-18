@@ -1,6 +1,6 @@
 import random
 from app import app
-from models import db, Book
+from models import db, Book, Comment
 
 titles = [
     "Echoes of the Void", "Whispers of the Clockwork City", "The Last Algorithm", 
@@ -19,13 +19,12 @@ authors = [
 ]
 
 def generate_seed_data():
-    # 🎯 FIX: Build the tables inside the database first if they don't exist yet
-    print("🏗️ Creating database tables if missing...")
-    db.create_all()
+    # 🟢 Force drop existing tables to clear out old database structure caching
+    print("🗑️ Dropping existing structural tables to clean database schema context...")
+    db.drop_all()
     
-    print("⏳ Clearing existing tables...")
-    Book.query.delete()
-    db.session.commit()
+    print("🏗️ Creating database tables with brand new column models...")
+    db.create_all()
     
     print("🌱 Synthesizing 100 random catalog entries inside openlibrary_db...")
     used_keys = set()
@@ -50,7 +49,8 @@ def generate_seed_data():
             cover_url=f"https://picsum.photos/id/{cover_id}/400/600",
             year=random.randint(1950, 2026),
             status=random.choice(['in progress', 'read']) if i % 5 == 0 else 'in progress',
-            rating=random.randint(3, 5) if i % 5 == 0 else 0
+            rating=random.randint(3, 5) if i % 5 == 0 else 0,
+            is_favorite=random.choice([True, False]) if i % 5 == 0 else False
         )
         db.session.add(new_book)
         
